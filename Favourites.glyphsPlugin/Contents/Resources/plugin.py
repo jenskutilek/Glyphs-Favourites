@@ -1,6 +1,6 @@
 from time import time
 import objc
-from AppKit import NSControlKeyMask, NSMenuItem, NSShiftKeyMask
+from AppKit import NSControlKeyMask, NSMenuItem, NSShiftKeyMask, NSTimer
 from GlyphsApp import Glyphs, WINDOW_MENU, DOCUMENTDIDCLOSE, DOCUMENTOPENED
 from GlyphsApp.plugins import GeneralPlugin
 
@@ -23,9 +23,24 @@ class Favourites(GeneralPlugin):
         Glyphs.menu[WINDOW_MENU].append(newMenuItem)
         self.window = None
         self.launch_time = time()
-        print(f"Launch: {self.launch_time}")
-        if Glyphs.defaults[libkey % "time"] is None:
-            Glyphs.defaults[libkey % "time"] = 0
+
+        # Initialize the time counter
+        for key in ("time_session", "time_total"):
+            if Glyphs.defaults[libkey % key] is None:
+                Glyphs.defaults[libkey % key] = 0
+        
+        # Add any time from last session to the total time
+        Glyphs.defaults[libkey % "time_total"] += Glyphs.defaults[libkey % "time_session"]
+        print(f"Usage: {Glyphs.defaults[libkey % 'time_total']} minutes")
+
+        # Record the session time every 10 seconds
+        self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
+            10.0,
+            self,
+            self.logTime_,
+            None,
+            True
+        )
 
     def showWindow_(self, sender):
         """
@@ -58,13 +73,12 @@ class Favourites(GeneralPlugin):
             Glyphs.removeCallback(self.docClosed)
             Glyphs.removeCallback(self.docOpened)
             self.hasNotification = False
-        quit_time = time()
+
+    def logTime_(self, info):
         # Save time in minutes
-        Glyphs.defaults[libkey % "time"] += (
-            int(quit_time - self.launch_time) // 60
-        )
-        # if self.window is not None:
-        #     self.window.save_window()
+        session_time = int(time() - self.launch_time) // 60
+        Glyphs.defaults[libkey % "time_session"] = session_time
+        print("Session:", Glyphs.defaults[libkey % "time_session"], "minutes")
 
     @objc.python_method
     def __file__(self):
