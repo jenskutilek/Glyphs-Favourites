@@ -1,6 +1,5 @@
 from AppKit import NSDragOperationCopy, NSFilenamesPboardType
 from pathlib import Path
-from time import time
 from GlyphsApp import Glyphs
 
 from vanilla import (
