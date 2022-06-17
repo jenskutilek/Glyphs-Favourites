@@ -1,6 +1,6 @@
 from time import time
 import objc
-from AppKit import NSControlKeyMask, NSMenuItem, NSShiftKeyMask, NSTimer
+from AppKit import NSMenuItem, NSTimer
 from GlyphsApp import Glyphs, WINDOW_MENU, DOCUMENTDIDCLOSE, DOCUMENTOPENED
 from GlyphsApp.plugins import GeneralPlugin
 
@@ -12,10 +12,6 @@ class Favourites(GeneralPlugin):
     def settings(self):
         self.hasNotification = False
         self.name = Glyphs.localize({"de": "Favoriten", "en": "Favourites"})
-        # A keyboard shortcut for activating/deactivating the plug-in
-        # (together with Control + Shift)
-        self.keyboardShortcut = "f"
-        self.keyboardShortcutModifier = NSControlKeyMask | NSShiftKeyMask
 
     @objc.python_method
     def start(self):
@@ -30,16 +26,14 @@ class Favourites(GeneralPlugin):
                 Glyphs.defaults[libkey % key] = 0
         
         # Add any time from last session to the total time
-        Glyphs.defaults[libkey % "time_total"] += Glyphs.defaults[libkey % "time_session"]
-        print(f"Usage: {Glyphs.defaults[libkey % 'time_total']} minutes")
+        Glyphs.defaults[libkey % "time_total"] += (
+            Glyphs.defaults[libkey % "time_session"]
+        )
+        # print(f"Usage: {Glyphs.defaults[libkey % 'time_total']} minutes")
 
         # Record the session time every 10 seconds
         self.timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
-            10.0,
-            self,
-            self.logTime_,
-            None,
-            True
+            29.0, self, self.logTime_, None, True
         )
 
     def showWindow_(self, sender):
@@ -78,7 +72,7 @@ class Favourites(GeneralPlugin):
         # Save time in minutes
         session_time = int(time() - self.launch_time) // 60
         Glyphs.defaults[libkey % "time_session"] = session_time
-        print("Session:", Glyphs.defaults[libkey % "time_session"], "minutes")
+        # print("Session:", Glyphs.defaults[libkey % "time_session"], "minutes")
 
     @objc.python_method
     def __file__(self):
