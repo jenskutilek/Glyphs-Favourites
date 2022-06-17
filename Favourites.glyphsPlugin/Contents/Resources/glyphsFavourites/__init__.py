@@ -17,8 +17,8 @@ class FavouritesUI:
     def __init__(self, plugin):
         self.plugin = plugin
         self._setup_drop()
-        s = (500, 300)
-        self.w = Window(
+        s = (500, 100)
+        self.w = FloatingWindow(
             s,
             self.plugin.name,
             closable=True,
@@ -42,11 +42,10 @@ class FavouritesUI:
                 },
                 {
                     "title": "Name",
-                    "minWidth": 100,
                 },
                 {
                     "title": "Path",
-                    # "minWidth": 100,
+                    "minWidth": 100,
                 },
             ],
         )
