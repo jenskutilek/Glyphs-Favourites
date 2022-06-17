@@ -36,22 +36,21 @@ class Favourites(GeneralPlugin):
             Glyphs.addCallback(self.docClosed, DOCUMENTDIDCLOSE)
             self.hasNotification = True
         if self.window is None:
-            self.window = GlyphsFavouritesUI(self)
+            self.window = FavouritesUI(self)
 
     @objc.python_method
-    def docClosed(self, sender):
-        print(sender.get())
+    def docClosed(self, info):
+        obj = info.object()  # GSDocument
+        if hasattr(obj, "filePath"):
+            path = obj.filePath
+            # log end edit
 
     @objc.python_method
-    def docOpened(self, sender):
-        print(sender.get())
-
-    @objc.python_method
-    def windowClosed(self, sender):
-        print("windowClosed")
-        if self.window is not None:
-            self.window.save_window()
-            self.window = None
+    def docOpened(self, info):
+        obj = info.object()  # GSDocument
+        if hasattr(obj, "filePath"):
+            path = obj.filePath
+            # log begin edit
 
     @objc.python_method
     def __del__(self):
@@ -64,8 +63,8 @@ class Favourites(GeneralPlugin):
         Glyphs.defaults[libkey % "time"] += (
             int(quit_time - self.launch_time) // 60
         )
-        if self.window is not None:
-            self.window.save_window()
+        # if self.window is not None:
+        #     self.window.save_window()
 
     @objc.python_method
     def __file__(self):
