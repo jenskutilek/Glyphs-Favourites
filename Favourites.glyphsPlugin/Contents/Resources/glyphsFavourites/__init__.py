@@ -36,13 +36,13 @@ class FavouritesUI:
             otherApplicationDropSettings=self.selfAppDropDict,
             columnDescriptions=[
                 {
-                    "title": "Name",
-                    "minWidth": 100,
-                },
-                {
-                    "title": "Relevancy",
+                    "title": "Relevance",
                     "width": 80,
                     "cell": LevelIndicatorListCell(style="relevancy"),
+                },
+                {
+                    "title": "Name",
+                    "minWidth": 100,
                 },
                 {
                     "title": "Path",
@@ -74,13 +74,10 @@ class FavouritesUI:
         }
 
     def _callback_double_click(self, sender):
-        print("_callback_double_click")
         items = sender.get()
-        print(sender.getSelection())
         for i in sender.getSelection():
             entry = items[i]
             filepath = Path(entry["Path"]) / entry["Name"]
-            print(filepath)
             Glyphs.open(str(filepath))
 
     def _callback_drop(self, sender, dropInfo):
@@ -88,8 +85,10 @@ class FavouritesUI:
             return True
 
         for entry in dropInfo["data"]:
+            if entry in self.plugin.data:
+                continue
+
             path = Path(entry)
-            print(path.suffix)
             if path.suffix not in (
                 ".glyphs",
                 ".glyphspackage",
@@ -101,39 +100,36 @@ class FavouritesUI:
                 {
                     "Name": path.name,
                     "Path": str(path.parent),
-                    "Relevancy": 0,
+                    "Relevance": 0,
                 }
             )
-        self._save_data()
+            self.plugin.add_entry(entry)
+        self.plugin.save_data()
         return True
 
     def _callback_close(self, sender):
-        print("_callback_close")
+        # print("_callback_close")
         self.save_window()
         self.plugin.window = None
 
     def _load_data(self):
-        data = Glyphs.defaults[libkey % "data"]
-        if data is not None:
-            for entry in data:
-                self.w.group.list.append(entry)
-        print("Load data:", data)
-
-    def _save_data(self):
-        # Save the list
-        Glyphs.defaults[libkey % "data"] = self.w.group.list.get()
+        # Load data for the vanilla list from the parent plugin
+        time_total = self.plugin.time_total
+        for path, entry in self.plugin.data.items():
+            p = Path(path)
+            if time_total == 0:
+                rel = 0
+            else:
+                rel = 100 * entry["total"] // time_total
+            self.w.group.list.append(
+                {
+                    "Name": p.name,
+                    "Path": str(p.parent),
+                    "Relevance": rel,
+                }
+            )
 
     def save_window(self):
         # FIXME: Save column widths?
         # Glyphs.defaults[libkey % "widthName"] = self.w.group.list.get()
-        self._save_data()
-
-
-if __name__ == "__main__":
-
-    class Plugin:
-        pass
-
-    p = Plugin()
-    p.name = "Favoriten"
-    FavouritesUI(p)
+        self.plugin.save_data()
