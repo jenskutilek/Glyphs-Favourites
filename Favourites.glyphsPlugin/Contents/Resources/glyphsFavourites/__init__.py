@@ -1,4 +1,4 @@
-from AppKit import NSDragOperationCopy, NSFilenamesPboardType
+from AppKit import NSDragOperationCopy, NSFilenamesPboardType, NSNoBorder
 from pathlib import Path
 from GlyphsApp import Glyphs
 
@@ -56,11 +56,13 @@ class FavouritesUI:
         self.w.group.addAutoPosSizeRules(rules)
         self.w.addAutoPosSizeRules(
             [
-                "H:|-8-[group]-8-|",
-                "V:|-8-[group]-8-|",
+                "H:|-0-[group]-0-|",
+                "V:|-0-[group]-0-|",
             ]
         )
         self.w.open()
+        scrollView = self.w.group.list._nsObject
+        scrollView.setBorderType_(NSNoBorder)
         self._load_data()
 
     def _setup_drop(self):
