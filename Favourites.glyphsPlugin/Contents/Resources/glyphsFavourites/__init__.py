@@ -41,11 +41,11 @@ class FavouritesUI:
                     "cell": LevelIndicatorListCell(style="relevancy"),
                 },
                 {
-                    "title": "Name",
+                    "title": "Path",
+                    # "minWidth": 100,
                 },
                 {
-                    "title": "Path",
-                    "minWidth": 100,
+                    "title": "Name",
                 },
             ],
         )
