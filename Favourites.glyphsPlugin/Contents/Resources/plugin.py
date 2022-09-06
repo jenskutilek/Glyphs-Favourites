@@ -47,7 +47,7 @@ class Favourites(GeneralPlugin):
         # Session data for opened files
         # {path, open_time, session_time}
         self.session = {}
-    
+
     @objc.python_method
     def add_entry(self, path):
         if path in self.data:
@@ -87,7 +87,7 @@ class Favourites(GeneralPlugin):
             return
 
         # We should watch this file
-        session_time= int(time() - self.session[path]) // 60
+        session_time = int(time() - self.session[path]) // 60
         del self.session[path]
         self.data[path]["session"] += session_time
         print(
