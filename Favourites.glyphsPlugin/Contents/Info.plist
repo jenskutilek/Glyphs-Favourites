@@ -16,12 +16,12 @@
 	<string>0.1</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>UpdateFeedURL</key>
+	<!--<key>UpdateFeedURL</key>
 	<string>____OnlineUrlToThisPlist____</string>
 	<key>productPageURL</key>
 	<string>____ProductPageURL____</string>
 	<key>productReleaseNotes</key>
-	<string>____LatestReleaseNotes____</string>
+	<string>____LatestReleaseNotes____</string>-->
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Jens Kutilek, 2022</string>
 	<key>NSPrincipalClass</key>
