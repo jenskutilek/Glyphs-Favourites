@@ -84,6 +84,14 @@ class Favourites(GeneralPlugin):
 
         path = obj.filePath
         if path not in self.data:
+            # File is not in favourites
+            return
+
+        if path not in self.session:
+            # This happended to me once, but why?
+            # The path shown started with "~/Documents/..."
+            print(f"ERROR: Path not found in current session: '{path}' in")
+            print(self.session)
             return
 
         # We should watch this file
