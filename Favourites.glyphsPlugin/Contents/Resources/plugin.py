@@ -6,17 +6,10 @@ from AppKit import (
     NSApplicationWillResignActiveNotification,
     NSMenuItem,
     NSNotificationCenter,
-    NSTimer,
     NSWindowDidBecomeMainNotification,
     NSWindowDidResignMainNotification,
 )
-from GlyphsApp import (
-    Glyphs,
-    WINDOW_MENU,
-    DOCUMENTACTIVATED,
-    DOCUMENTDIDCLOSE,
-    DOCUMENTOPENED,
-)
+from GlyphsApp import Glyphs, WINDOW_MENU
 from GlyphsApp.plugins import GeneralPlugin
 
 from glyphsFavourites import FavouritesUI, libkey
@@ -46,13 +39,6 @@ class Favourites(GeneralPlugin):
         Glyphs.defaults[libkey % "TimeTotal"] += Glyphs.defaults[libkey % "TimeSession"]
         # print(f"Usage: {Glyphs.defaults[libkey % 'TimeTotal']} seconds")
         self.time_total = Glyphs.defaults[libkey % "TimeTotal"]
-
-        # # Record the session time every x seconds
-        # self.timer = (
-        #     NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
-        #         10.0, self, self.logTime_, None, True
-        #     )
-        # )
 
         data = Glyphs.defaults[libkey % "Data"]
         self.data = {}
@@ -86,10 +72,6 @@ class Favourites(GeneralPlugin):
         Show the window
         """
         if not self.hasNotification:
-            # Glyphs.addCallback(self.docActivated, DOCUMENTACTIVATED)
-            # Glyphs.addCallback(self.docOpened, DOCUMENTOPENED)
-            # Glyphs.addCallback(self.docClosed, DOCUMENTDIDCLOSE)
-
             self.center = NSNotificationCenter.defaultCenter()
             self.center.addObserver_selector_name_object_(
                 self,
@@ -198,56 +180,9 @@ class Favourites(GeneralPlugin):
         print(f"  Session: {self.data[path]['session']}")
         print(f"  Total: {self.data[path]['total']}")
 
-    # @objc.python_method
-    # def docClosed(self, info):
-    #     obj = info.object()  # GSDocument
-    #     if not hasattr(obj, "filePath"):
-    #         return
-
-    #     path = obj.filePath
-    #     if path not in self.data:
-    #         # File is not in favourites
-    #         return
-
-    #     if path not in self.session:
-    #         # This happended to me once, but why?
-    #         # The path shown started with "~/Documents/..."
-    #         print(f"ERROR: Path not found in current session: '{path}' in")
-    #         print(self.session)
-    #         return
-
-    #     # We should watch this file
-    #     session_time = int(time() - self.session[path])
-    #     del self.session[path]
-    #     self.data[path]["session"] += session_time
-    #     print(
-    #         f"Closed {Path(path).name} after {session_time} seconds "
-    #         f"({self.data[path]['total']} seconds total so far)"
-    #     )
-    #     self.save_data()
-
-    # @objc.python_method
-    # def docOpened(self, info):
-    #     obj = info.object()  # GSDocument
-    #     if not hasattr(obj, "filePath"):
-    #         return
-
-    #     path = obj.filePath
-    #     if path not in self.data:
-    #         return
-
-    #     # We should watch this file
-    #     self.session[path] = int(time())
-    #     print(
-    #         f"Start watching {Path(path).name} "
-    #         f"({self.data[path]['total']} seconds total so far)"
-    #     )
-
     @objc.python_method
     def __del__(self):
         if self.hasNotification:
-            Glyphs.removeCallback(self.docClosed)
-            Glyphs.removeCallback(self.docOpened)
             self.hasNotification = False
 
     def logTime_(self, info=None):
