@@ -119,7 +119,8 @@ class Favourites(GeneralPlugin):
         session_time = became_inactive_time - self.became_active_time
         Glyphs.defaults[libkey % "TimeSession"] += session_time
         print(
-            f"Log session: +{session_time} (total session {Glyphs.defaults[libkey % 'TimeSession']}) seconds"
+            f"Log session: +{session_time} (total session "
+            f"{Glyphs.defaults[libkey % 'TimeSession']}) seconds"
         )
 
     @objc.python_method
@@ -183,6 +184,7 @@ class Favourites(GeneralPlugin):
     @objc.python_method
     def __del__(self):
         if self.hasNotification:
+            # TODO: Remove notifications
             self.hasNotification = False
 
     def logTime_(self, info=None):
