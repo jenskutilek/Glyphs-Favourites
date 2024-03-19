@@ -15,6 +15,9 @@ from GlyphsApp.plugins import GeneralPlugin
 from glyphsFavourites import FavouritesUI, libkey
 
 
+DEBUG = False
+
+
 class Favourites(GeneralPlugin):
     @objc.python_method
     def settings(self):
@@ -28,7 +31,8 @@ class Favourites(GeneralPlugin):
         self.window = None
         self.launch_time = int(time())
         self.became_active_time = self.launch_time
-        print(f"Glyphs launched at {self.became_active_time}")
+        if DEBUG:
+            print(f"Glyphs launched at {self.became_active_time}")
 
         # Initialize the time counter
         for key in ("TimeSession", "TimeTotal"):
@@ -45,7 +49,8 @@ class Favourites(GeneralPlugin):
         if data is not None:
             for path, total, session in data:
                 self.data[path] = {"total": total + session, "session": 0}
-        print("Loaded:", self.data)
+        if DEBUG:
+            print("Loaded:", self.data)
         # Session data for opened files
         # {path, open_time, session_time}
         self.session = {}
@@ -53,7 +58,8 @@ class Favourites(GeneralPlugin):
     @objc.python_method
     def add_entry(self, path):
         if path in self.data:
-            print("File is already in favourites")
+            if DEBUG:
+                print("File is already in favourites")
             return
 
         self.data[path] = {"total": 0, "session": 0}
@@ -103,25 +109,33 @@ class Favourites(GeneralPlugin):
 
     def appActivated_(self, info):
         self.became_active_time = int(time())
-        print(f"Glyphs became active at {self.became_active_time}")
+        if DEBUG:
+            print(f"Glyphs became active at {self.became_active_time}")
 
     def appDeactivated_(self, info):
         # Save time in seconds
         became_inactive_time = int(time())
-        print(f"Glyphs became inactive at {became_inactive_time}")
+        if DEBUG:
+            print(f"Glyphs became inactive at {became_inactive_time}")
         if self.became_active_time < self.launch_time:
-            print(
-                "Time of becoming active is before app launch time, something is wrong."
-            )
-            print(f"Launch {self.launch_time} vs. activation {self.became_active_time}")
+            if DEBUG:
+                print(
+                    "Time of becoming active is before app launch time, "
+                    "something is wrong."
+                )
+                print(
+                    f"Launch {self.launch_time} vs. activation "
+                    f"{self.became_active_time}"
+                )
             return
 
         session_time = became_inactive_time - self.became_active_time
         Glyphs.defaults[libkey % "TimeSession"] += session_time
-        print(
-            f"Log session: +{session_time} (total session "
-            f"{Glyphs.defaults[libkey % 'TimeSession']}) seconds"
-        )
+        if DEBUG:
+            print(
+                f"Log session: +{session_time} (total session "
+                f"{Glyphs.defaults[libkey % 'TimeSession']}) seconds"
+            )
 
     @objc.python_method
     def getPath(self, info):
@@ -131,13 +145,15 @@ class Favourites(GeneralPlugin):
             str | None: The path if it could be extracted; otherwise None
         """
         obj = info.object()
-        print(f"getPath: {obj}")
+        if DEBUG:
+            print(f"getPath: {obj}")
         try:
             doc = obj.windowController().glyphsDocument()
         except:  # noqa: E722
             try:
                 doc = obj.windowController().document()
-                print(f"obj.windowController().document(): {doc}")
+                if DEBUG:
+                    print(f"obj.windowController().document(): {doc}")
             except:  # noqa: E722
                 return
 
@@ -155,19 +171,22 @@ class Favourites(GeneralPlugin):
         if path is None:
             return
 
-        print(f"docActivated_: {path}")
+        if DEBUG:
+            print(f"docActivated_: {path}")
         # We should watch this file
         self.session[path] = int(time())
-        print(f"Resume watching {Path(path).name}.")
-        print(f"  Session: {self.data[path]['session']}")
-        print(f"  Total: {self.data[path]['total']}")
+        if DEBUG:
+            print(f"Resume watching {Path(path).name}.")
+            print(f"  Session: {self.data[path]['session']}")
+            print(f"  Total: {self.data[path]['total']}")
 
     def docDeactivated_(self, info):
         path = self.getPath(info)
         if path is None:
             return
 
-        print(f"docDectivated_: {path}")
+        if DEBUG:
+            print(f"docDectivated_: {path}")
         if path not in self.session:
             print(f"ERROR: Path not found in current session: '{path}' in")
             print(self.session)
@@ -177,9 +196,10 @@ class Favourites(GeneralPlugin):
         active_time = int(time()) - self.session[path]
         del self.session[path]
         self.data[path]["session"] += active_time
-        print(f"Deactivated {Path(path).name} after {active_time} seconds.")
-        print(f"  Session: {self.data[path]['session']}")
-        print(f"  Total: {self.data[path]['total']}")
+        if DEBUG:
+            print(f"Deactivated {Path(path).name} after {active_time} seconds.")
+            print(f"  Session: {self.data[path]['session']}")
+            print(f"  Total: {self.data[path]['total']}")
 
     @objc.python_method
     def __del__(self):
