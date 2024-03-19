@@ -10,7 +10,7 @@ from vanilla import (
     Window,
 )
 
-libkey = "de.kutilek.GlyphsFavs.%s"
+libkey = "deKutilekGlyphsFavs%s"
 
 
 class FavouritesUI:
