@@ -187,19 +187,6 @@ class Favourites(GeneralPlugin):
             # TODO: Remove notifications
             self.hasNotification = False
 
-    def logTime_(self, info=None):
-        # Save time in seconds
-        if self.became_active_time < self.launch_time:
-            print(
-                "Time of becoming active is before app launch time, something is wrong."
-            )
-            print(f"Launch {self.launch_time} vs. activation {self.became_active_time}")
-            return
-
-        session_time = int(time() - self.became_active_time)
-        Glyphs.defaults[libkey % "TimeSession"] += session_time
-        print("Log session:", Glyphs.defaults[libkey % "TimeSession"], "seconds")
-
     @objc.python_method
     def __file__(self):
         """
