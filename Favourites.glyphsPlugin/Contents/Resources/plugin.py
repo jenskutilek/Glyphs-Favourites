@@ -1,6 +1,7 @@
-from pathlib import Path
-from time import time
+from __future__ import annotations
+
 import objc
+
 from AppKit import (
     NSApplicationDidBecomeActiveNotification,
     NSApplicationWillResignActiveNotification,
@@ -11,8 +12,9 @@ from AppKit import (
 )
 from GlyphsApp import Glyphs, WINDOW_MENU
 from GlyphsApp.plugins import GeneralPlugin
-
 from glyphsFavourites import FavouritesUI, libkey
+from pathlib import Path
+from time import time
 
 
 DEBUG = False
