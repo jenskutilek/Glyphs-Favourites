@@ -203,6 +203,7 @@ class Favourites(GeneralPlugin):
                 if doc is None:
                     if DEBUG:
                         print("  Falling back to Glyphs.currentFontDocument()")
+                        # FIXME: Stop timer when there is no document
                     doc = Glyphs.currentFontDocument()
             except:  # noqa: E722
                 return
@@ -252,6 +253,7 @@ class Favourites(GeneralPlugin):
             print(f"  Total: {self.data[path]['total']}")
 
     def docClosed_(self, info) -> None:
+        # FIXME: Is also called on the export sheet, and will close the session erroneously
         path = self.getPath(info)
         if path is None:
             return
