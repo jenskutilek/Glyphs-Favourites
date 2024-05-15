@@ -12,6 +12,7 @@ from AppKit import (
     NSWindowDidResignMainNotification,
     NSWindowWillCloseNotification,
 )
+from datetime import datetime
 from GlyphsApp import Glyphs, WINDOW_MENU
 from GlyphsApp.plugins import GeneralPlugin
 from glyphsFavourites import FavouritesUI, libkey
@@ -20,6 +21,11 @@ from time import time
 
 
 DEBUG = False
+
+
+def print_time(action: str, timestamp: int) -> None:
+    t = datetime.fromtimestamp(timestamp).strftime("%I:%M:%S")
+    print(f"Glyphs {action} at {t}")
 
 
 class Favourites(GeneralPlugin):
@@ -37,7 +43,7 @@ class Favourites(GeneralPlugin):
         self.launch_time = int(time())
         self.became_active_time = self.launch_time
         if DEBUG:
-            print(f"Glyphs launched at {self.became_active_time}")
+            print_time("launched", self.became_active_time)
 
         # Initialize the time counter
         for key in ("TimeSession", "TimeTotal"):
@@ -147,13 +153,13 @@ class Favourites(GeneralPlugin):
     def appActivated_(self, info) -> None:
         self.became_active_time = int(time())
         if DEBUG:
-            print(f"Glyphs became active at {self.became_active_time}")
+            print_time("became active", self.became_active_time)
 
     def appDeactivated_(self, info) -> None:
         # Save time in seconds
         became_inactive_time = int(time())
         if DEBUG:
-            print(f"Glyphs became inactive at {became_inactive_time}")
+            print_time("became inactive",became_inactive_time)
         if self.became_active_time < self.launch_time:
             if DEBUG:
                 print(
