@@ -198,7 +198,8 @@ class Favourites(GeneralPlugin):
 
         obj = info.object()
         if DEBUG:
-            print(f"getPath: {obj}")
+            pass
+            # print(f"getPath: {obj}")
         try:
             doc = obj.windowController().glyphsDocument()
         except:  # noqa: E722
@@ -206,11 +207,11 @@ class Favourites(GeneralPlugin):
                 doc = obj.windowController().document()
                 if DEBUG:
                     print(f"  obj.windowController().document(): {doc}")
-                if doc is None:
-                    if DEBUG:
-                        print("  Falling back to Glyphs.currentFontDocument()")
-                        # FIXME: Stop timer when there is no document
-                    doc = Glyphs.currentFontDocument()
+                # if doc is None:
+                #     if DEBUG:
+                #         print("  Falling back to Glyphs.currentFontDocument()")
+                #         # FIXME: Stop timer when there is no document
+                #     doc = Glyphs.currentFontDocument()
             except:  # noqa: E722
                 return
 
