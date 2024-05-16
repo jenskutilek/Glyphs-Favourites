@@ -2,6 +2,8 @@
 
 A window for quick access to your favourite Glyphs files.
 
+![](images/favourites.png)
+
 Show the window via Window → Favourites.
 
 - Drag a file from Finder to add it to the list.
