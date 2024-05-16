@@ -13,15 +13,15 @@
 	<key>CFBundleName</key>
 	<string>Favourites</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.2</string>
+	<string>0.3</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
-	<!--<key>UpdateFeedURL</key>
-	<string>____OnlineUrlToThisPlist____</string>
+	<string>3</string>
+	<key>UpdateFeedURL</key>
+	<string>https://raw.githubusercontent.com/jenskutilek/Glyphs-Favourites/main/Favourites.glyphsPlugin/Contents/Info.plist</string>
 	<key>productPageURL</key>
-	<string>____ProductPageURL____</string>
+	<string>https://github.com/jenskutilek/Glyphs-Favourites</string>
 	<key>productReleaseNotes</key>
-	<string>____LatestReleaseNotes____</string>-->
+	<string>Initial public release</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Jens Kutilek, 2024</string>
 	<key>NSPrincipalClass</key>
