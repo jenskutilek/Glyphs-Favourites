@@ -24,7 +24,7 @@ DEBUG = False
 
 
 def print_time(action: str, timestamp: int) -> None:
-    t = datetime.fromtimestamp(timestamp).strftime("%I:%M:%S")
+    t = datetime.fromtimestamp(timestamp).strftime("%H:%M:%S")
     print(f"Glyphs {action} at {t}")
 
 
