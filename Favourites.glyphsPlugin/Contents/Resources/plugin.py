@@ -21,6 +21,7 @@ from time import time
 
 
 DEBUG = False
+SUMMARIZE = False  # Print a summary of loaded items at startup?
 
 
 def print_time(action: str, timestamp: int) -> None:
@@ -36,7 +37,7 @@ class Favourites(GeneralPlugin):
 
     @objc.python_method
     def start(self) -> None:
-        print()
+        # print()
         newMenuItem = NSMenuItem(self.name, self.showWindow_)
         Glyphs.menu[WINDOW_MENU].append(newMenuItem)
         self.window = None
@@ -61,20 +62,23 @@ class Favourites(GeneralPlugin):
         if data is not None:
             for path, total, session in data:
                 self.data[path] = {"total": total + session, "session": 0}
-        print(
-            f"Loaded favourites with total time spent: {self.time_total / 3600:0.2f} "
-            f"hours ({self.time_total} seconds)"
-        )
+        if SUMMARIZE:
+            print(
+                f"Loaded favourites with total time spent: "
+                f"{self.time_total / 3600:0.2f} hours ({self.time_total} seconds)"
+            )
         path_total = 0
         for path, times in self.data.items():
             path_time = times["total"]
             path_total += path_time
-            print(
-                f"Spent {path_time}s ({100 * path_time / self.time_total:0.2f}%) "
-                f"on {Path(path).name}"
-            )
+            if SUMMARIZE:
+                print(
+                    f"Spent {path_time}s ({100 * path_time / self.time_total:0.2f}%) "
+                    f"on {Path(path).name}"
+                )
         if self.time_total < path_total:
-            print(f"Resetting total time to {path_total} seconds")
+            if DEBUG:
+                print(f"Resetting total time to {path_total} seconds")
             self.time_total = path_total
         # Session data for opened files
         # {path, open_time, session_time}
@@ -159,7 +163,7 @@ class Favourites(GeneralPlugin):
         # Save time in seconds
         became_inactive_time = int(time())
         if DEBUG:
-            print_time("became inactive",became_inactive_time)
+            print_time("became inactive", became_inactive_time)
         if self.became_active_time < self.launch_time:
             if DEBUG:
                 print(
