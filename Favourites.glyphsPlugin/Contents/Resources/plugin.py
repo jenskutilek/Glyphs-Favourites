@@ -33,7 +33,22 @@ class Favourites(GeneralPlugin):
     @objc.python_method
     def settings(self) -> None:
         self.hasNotification = False
-        self.name = Glyphs.localize({"de": "Favoriten", "en": "Favourites"})
+        self.name = Glyphs.localize(
+            {
+                "cs": "Favoriti",
+                "de": "Favoriten",
+                "en": "Favourites",
+                "es": "Favoritos",
+                "fr": "Favoris",
+                "it": "Favoriti",
+                "ja": "気に入り",
+                "pt": "Favoritos",
+                "ru": "Фавориты",
+                "tr": "Favoriler",
+                "zh-Hans": "收藏",
+                "zh-Hant": "收藏",
+            }
+        )
 
     @objc.python_method
     def start(self) -> None:
