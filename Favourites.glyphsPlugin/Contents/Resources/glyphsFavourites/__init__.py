@@ -1,9 +1,9 @@
-from AppKit import NSDragOperationCopy, NSFilenamesPboardType, NSNoBorder
+from AppKit import NSFilenamesPboardType, NSNoBorder
 from pathlib import Path
 from GlyphsApp import Glyphs
 
 from vanilla import (
-    FloatingWindow,
+    # FloatingWindow,
     Group,
     LevelIndicatorListCell,
     List,
@@ -13,12 +13,15 @@ from vanilla import (
 libkey = "deKutilekGlyphsFavs%s"
 
 
+window_class = Window
+
+
 class FavouritesUI:
     def __init__(self, plugin):
         self.plugin = plugin
         self._setup_drop()
         s = (500, 100)
-        self.w = FloatingWindow(
+        self.w = window_class(
             s,
             self.plugin.name,
             closable=True,
