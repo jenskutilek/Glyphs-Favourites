@@ -6,6 +6,8 @@ from AppKit import (
     NSApplicationDidBecomeActiveNotification,
     NSApplicationWillResignActiveNotification,
     NSApplicationWillTerminateNotification,
+    NSCommandKeyMask,
+    NSControlKeyMask,
     NSMenuItem,
     NSNotificationCenter,
     NSWindowDidBecomeMainNotification,
@@ -51,12 +53,15 @@ class Favourites(GeneralPlugin):
                 "zh-Hant": "收藏",
             }
         )
+        self.keyboardShortcut = "d"
+        self.keyboardShortcutModifier = NSControlKeyMask
+        self.menuItem = NSMenuItem(self.name, self.showWindow_)
+        self.menuItem.setKeyEquivalent_(self.keyboardShortcut)
+        self.menuItem.setKeyEquivalentModifierMask_(self.keyboardShortcutModifier)
 
     @objc.python_method
     def start(self) -> None:
-        # print()
-        newMenuItem = NSMenuItem(self.name, self.showWindow_)
-        Glyphs.menu[WINDOW_MENU].append(newMenuItem)
+        Glyphs.menu[WINDOW_MENU].append(self.menuItem)
         self.window = None
         self.launch_time = int(time())
         self.became_active_time = self.launch_time
