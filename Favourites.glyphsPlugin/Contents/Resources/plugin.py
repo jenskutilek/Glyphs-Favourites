@@ -35,13 +35,15 @@ class Favourites(GeneralPlugin):
         self.hasNotification = False
         self.name = Glyphs.localize(
             {
+                "ar": "المفضلة",
                 "cs": "Oblíbené",
                 "de": "Favoriten",
                 "en": "Favourites",
                 "es": "Favoritos",
                 "fr": "Favoris",
-                "it": "Favoriti",
-                "ja": "気に入り",
+                "it": "Preferiti",
+                "ja": "お気に入り",
+                "ko": "즐겨찾기",
                 "pt": "Favoritos",
                 "ru": "Избранное",
                 "tr": "Favoriler",
