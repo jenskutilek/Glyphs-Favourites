@@ -171,10 +171,12 @@ class Favourites(GeneralPlugin):
 
     def showWindow_(self, sender) -> None:
         """
-        Show the window
+        Show the window, or close it if it is already open.
         """
         if self.window is None:
             self.window = FavouritesUI(self)
+        else:
+            self.window.w.close()
 
     def appActivated_(self, info) -> None:
         self.became_active_time = int(time())
