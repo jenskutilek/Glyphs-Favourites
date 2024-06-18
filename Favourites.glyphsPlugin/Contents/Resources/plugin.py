@@ -56,6 +56,9 @@ class Favourites(GeneralPlugin):
         self.keyboardShortcut = "d"
         self.keyboardShortcutModifier = NSControlKeyMask
         self.menuItem = NSMenuItem(self.name, self.showWindow_)
+        self.menuItem.setTitle_(self.name)
+        self.menuItem.setAction_(self.showWindow_)
+        self.menuItem.setTarget_(self)
         self.menuItem.setKeyEquivalent_(self.keyboardShortcut)
         self.menuItem.setKeyEquivalentModifierMask_(self.keyboardShortcutModifier)
 
