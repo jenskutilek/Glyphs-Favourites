@@ -1,9 +1,8 @@
-from AppKit import NSFilenamesPboardType, NSNoBorder
 from pathlib import Path
-from GlyphsApp import Glyphs
 
+from AppKit import NSURL, NSFilenamesPboardType, NSNoBorder
+from GlyphsApp import Glyphs
 from vanilla import (
-    # FloatingWindow,
     Group,
     LevelIndicatorListCell,
     List,
@@ -13,15 +12,12 @@ from vanilla import (
 libkey = "deKutilekGlyphsFavs%s"
 
 
-window_class = Window
-
-
 class FavouritesUI:
-    def __init__(self, plugin):
+    def __init__(self, plugin) -> None:
         self.plugin = plugin
         self._setup_drop()
         s = (500, 100)
-        self.w = window_class(
+        self.w = Window(
             s,
             self.plugin.name,
             closable=True,
@@ -68,7 +64,7 @@ class FavouritesUI:
         scrollView.setBorderType_(NSNoBorder)
         self._load_data()
 
-    def _setup_drop(self):
+    def _setup_drop(self) -> None:
         self.selfAppDropDict = {
             "type": NSFilenamesPboardType,
             # "operation": NSDragOperationCopy,
@@ -77,14 +73,14 @@ class FavouritesUI:
             "callback": self._callback_drop,
         }
 
-    def _callback_double_click(self, sender):
+    def _callback_double_click(self, sender) -> None:
         items = sender.get()
         for i in sender.getSelection():
             entry = items[i]
             filepath = Path(entry["Path"]) / entry["Name"]
             Glyphs.open(str(filepath))
 
-    def _callback_drop(self, sender, dropInfo):
+    def _callback_drop(self, sender, dropInfo) -> bool:
         if dropInfo["data"] and dropInfo["isProposal"]:
             return True
 
@@ -111,12 +107,12 @@ class FavouritesUI:
         self.plugin.save_data()
         return True
 
-    def _callback_close(self, sender):
+    def _callback_close(self, sender) -> None:
         # print("_callback_close")
         self.save_window()
         self.plugin.window = None
 
-    def _load_data(self):
+    def _load_data(self) -> None:
         # Load data for the vanilla list from the parent plugin
         time_total = self.plugin.time_total
         for path, entry in self.plugin.data.items():
@@ -133,7 +129,7 @@ class FavouritesUI:
                 }
             )
 
-    def save_window(self):
+    def save_window(self) -> None:
         # FIXME: Save column widths?
         # Glyphs.defaults[libkey % "widthName"] = self.w.group.list.get()
         self.plugin.save_data()

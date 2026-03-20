@@ -1,12 +1,12 @@
-from __future__ import annotations
+from datetime import datetime
+from pathlib import Path
+from time import time
 
 import objc
-
 from AppKit import (
     NSApplicationDidBecomeActiveNotification,
     NSApplicationWillResignActiveNotification,
     NSApplicationWillTerminateNotification,
-    NSCommandKeyMask,
     NSControlKeyMask,
     NSMenuItem,
     NSNotificationCenter,
@@ -14,13 +14,9 @@ from AppKit import (
     NSWindowDidResignMainNotification,
     NSWindowWillCloseNotification,
 )
-from datetime import datetime
-from GlyphsApp import Glyphs, WINDOW_MENU
+from GlyphsApp import WINDOW_MENU, Glyphs
 from GlyphsApp.plugins import GeneralPlugin
 from glyphsFavourites import FavouritesUI, libkey
-from pathlib import Path
-from time import time
-
 
 DEBUG = False
 SUMMARIZE = False  # Print a summary of loaded items at startup?
@@ -107,7 +103,7 @@ class Favourites(GeneralPlugin):
             self.time_total = path_total
         # Session data for opened files
         # {path, open_time, session_time}
-        self.session = {}
+        self.session: dict[str, int] = {}
 
         self.center = None
         self.add_notifications()
@@ -225,7 +221,7 @@ class Favourites(GeneralPlugin):
             str | None: The path if it could be extracted; otherwise None
         """
         if info is None:
-            return
+            return None
 
         obj = info.object()
         if DEBUG:
@@ -244,14 +240,14 @@ class Favourites(GeneralPlugin):
                 #         # FIXME: Stop timer when there is no document
                 #     doc = Glyphs.currentFontDocument()
             except:  # noqa: E722
-                return
+                return None
 
         if not hasattr(doc, "filePath"):
-            return
+            return None
 
         path = doc.filePath
         if path not in self.data:
-            return
+            return None
 
         return path
 
